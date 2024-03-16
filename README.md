@@ -25,6 +25,8 @@ undefined
   ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0',
   browser = detectBrowser(ua);
 undefined
+> browser instanceof FirefoxDesktop
+true
 > browser.deviceType
 "Macintosh"
 > browser.systemInfo
