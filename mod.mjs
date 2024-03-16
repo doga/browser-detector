@@ -24,6 +24,9 @@ class Browser {
   /** @returns {string} */
   get platformDetails() {return this.#info.platform.details;}
 
+  /** @returns {([{name:string, version:string}])} */
+  get extensions() {return this.#info.extensions;}
+  
   /** @returns {string} */
   toString(){return this.#info.userAgentString;}
 }
