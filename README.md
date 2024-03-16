@@ -1,6 +1,10 @@
 # browser-detector
 
-JavaScript library for server-side browser type detection.
+JavaScript library for browser type detection on the server-side or in browsers.
+
+If the browser being identified supports extensions, then `detectBrowser` will return an instance of a subclass of `Browser`.
+
+Otherwise `detectBrowser` will return an instance of `Browser`.
 
 ## Usage example
 
@@ -10,16 +14,31 @@ Deno 1.41.3
 exit using ctrl+d, ctrl+c, or close()
 REPL is running with all permissions allowed.
 To specify permissions, run `deno repl` with allow flags.
-> import { detectBrowser, Browser, ChromeDesktop, FirefoxAndroid, SafariMobile } from "https://esm.sh/gh/doga/browser-detector@0.1.0/mod.mjs";
+> import {
+  detectBrowser,
+  Browser,
+  ChromiumDesktop, EdgeDesktop, OperaDesktop, FirefoxDesktop, SafariDesktop,
+  FirefoxAndroid, SafariMobile
+} from 'https://esm.sh/gh/doga/browser-detector@0.2.0/mod.mjs';
 undefined
-> detectBrowser('Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1')
-u {}
-> let b = detectBrowser('Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1')
+> const
+  ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0',
+  browser = detectBrowser(ua);
 undefined
-> b.browserName
-"Safari"
-> b instanceof SafariMobile
+> browser instanceof FirefoxDesktop
 true
+> browser.deviceType
+"Macintosh"
+> browser.systemInfo
+[ "Macintosh", "Intel Mac OS X 10.15", "rv:121.0" ]
+> browser.platformName
+"Gecko"
+> browser.platformVersion
+"20100101"
+> browser.platformDetails
+undefined
+> `${browser}`
+"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0"
 >
 ```
 
