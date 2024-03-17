@@ -71,6 +71,12 @@ class FirefoxAndroid extends Browser{
   }
 }
 
+class KiwiAndroid extends Browser{
+  constructor(arg){
+    super(arg);
+  }
+}
+
 class SafariMobile extends Browser{
   constructor(arg){
     super(arg);
@@ -155,8 +161,12 @@ function detectBrowser(userAgentString){
       if (hasExtension('Edg')) return new EdgeDesktop(arg);
       if (hasExtension('Chrome')) return new ChromiumDesktop(arg);
       if (hasExtension('Safari')) return new SafariDesktop(arg);
-    } else if(deviceType.match(regex.android)) {
+    } else if(deviceType.match(regex.android) || hasExtension('Kiwi')) {
       if (hasExtension('Firefox')) return new FirefoxAndroid(arg);
+      // Kiwi is Android-only but it has got systemInfo wrong.
+      // 1st systemInfo item (deviceType) should be Android not Linux.
+      // See: https://user-agents.net/browsers/kiwi
+      if (hasExtension('Kiwi')) return new KiwiAndroid(arg); 
     } else if(deviceType.match(regex.appleMobile)) {
       if (
         hasExtension('Safari') && !['CriOS', 'FxiOS', 'EdgiOS', 'OPT'].find(ext => hasExtension(ext))
@@ -174,5 +184,6 @@ export {
   detectBrowser,
   Browser, 
   ChromiumDesktop, EdgeDesktop, OperaDesktop, FirefoxDesktop, SafariDesktop,
-  FirefoxAndroid, SafariMobile
+  FirefoxAndroid, KiwiAndroid,
+  SafariMobile
 };

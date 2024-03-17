@@ -19,7 +19,7 @@ To specify permissions, run `deno repl` with allow flags.
   Browser,
   ChromiumDesktop, EdgeDesktop, OperaDesktop, FirefoxDesktop, SafariDesktop,
   FirefoxAndroid, SafariMobile
-} from 'https://esm.sh/gh/doga/browser-detector@0.2.1/mod.mjs';
+} from 'https://esm.sh/gh/doga/browser-detector@0.2.2/mod.mjs';
 undefined
 > const
   ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0',
