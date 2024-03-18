@@ -1,6 +1,6 @@
 # browser-detector
 
-JavaScript library for browser type detection on the server-side or in browsers.
+JavaScript library for client-side browser type detection.
 
 If the browser being identified supports extensions, then `detectBrowser` will return an instance of a subclass of `Browser`.
 

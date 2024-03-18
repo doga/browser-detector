@@ -107,6 +107,11 @@ Some user agents on iPhone:
 - Microsoft Edge: Mozilla/5.0 (iPhone; CPU iPhone OS 15_8 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) EdgiOS/122.0.2365.86 Version/15.0 Mobile/15E148 Safari/604.1
 */
 
+/*
+Some user agents on iPad (iPadOS 16.2):
+- Safari: Mozilla/5.0 (Macintosh; Intel Mac OS X 10 15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.2 Safari/605.1.15
+*/
+
 const regex = {
   // User agent string. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
   // Debugged with https://regexr.com/
@@ -165,7 +170,7 @@ function detectBrowser(userAgentString){
       if (hasExtension('Firefox')) return new FirefoxAndroid(arg);
       // Kiwi is Android-only but it has got systemInfo wrong.
       // 1st systemInfo item (deviceType) should be Android not Linux.
-      // See: https://user-agents.net/browsers/kiwi
+      // See: https://user-agents.net/browsers/kiwi (TODO verify these UA strings)
       if (hasExtension('Kiwi')) return new KiwiAndroid(arg); 
     } else if(deviceType.match(regex.appleMobile)) {
       if (
