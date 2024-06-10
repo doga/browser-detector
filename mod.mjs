@@ -33,12 +33,16 @@ class Browser {
 
 
 // Desktop browsers that have extension support /////////////////////////////////////////
-class ChromiumDesktop extends Browser{
+class ChromeDesktop extends Browser{
   constructor(arg){
     super(arg);
   }
 }
-
+class SafariDesktop extends Browser{
+  constructor(arg){
+    super(arg);
+  }
+}
 class EdgeDesktop extends Browser{
   constructor(arg){
     super(arg);
@@ -51,13 +55,30 @@ class OperaDesktop extends Browser{
   }
 }
 
-class FirefoxDesktop extends Browser{
+class VivaldiDesktop extends Browser{
   constructor(arg){
     super(arg);
   }
 }
 
-class SafariDesktop extends Browser{
+class FirefoxDesktop extends Browser{
+  constructor(arg){
+    super(arg);
+  }
+}
+class BraveDesktop extends Browser{
+  constructor(arg){
+    super(arg);
+  }
+}
+
+class WaveboxDesktop extends Browser{
+  constructor(arg){
+    super(arg);
+  }
+}
+
+class ArcDesktop extends Browser{
   constructor(arg){
     super(arg);
   }
@@ -91,6 +112,7 @@ Some user agents on macOS:
 - ⚠️ Brave: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
 - ⚠️ Chrome: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
 - ⚠️ Vivaldi: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
+- ⚠️ Wavebox.io: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36
 - Firefox: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:121.0) Gecko/20100101 Firefox/121.0
 - Opera: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 OPR/91.0.4516.65
 - Safari: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15
@@ -117,18 +139,19 @@ const regex = {
   // Debugged with https://regexr.com/
   userAgent  : /^\s*(?<mozilla5>\S+)\s+\((?<systemInfo>[^)]+)\)\s+(?<platformName>[^/]+)\/(?<platformVersion>\S+)(\s+\((?<platformDetails>[^)]+)\))?(?<extensions>.*)$/, 
 
-  desktop    : /Windows|Mac|X11|Wayland/i, // X11|Wayland means Linux
+  desktop    : /Windows|Macintosh|X11|Wayland/i, // X11|Wayland means Linux
   android    : /Android/i,
   appleMobile: /iPhone|iPad/i,
 };
 
 /**
- * Infers a web browser's type from its User-Agent header.
- * @param {string} userAgentString - The User-Agent header value in an HTTP(S) request.
- * @returns {(Browser | null)}
+ * Returns the known browsers that match a User-Agent header.
+ * @param {string} userAgentString The User-Agent header value in an HTTP(S) request.
+ * @returns {Browser[]}
  */
 function detectBrowser(userAgentString){
   if(!(typeof userAgentString === 'string'))return null;
+  const browsers = [];
 
   try {
     const match = userAgentString.match(regex.userAgent);
@@ -137,58 +160,82 @@ function detectBrowser(userAgentString){
     const
     systemInfo = match.groups.systemInfo.trim().replaceAll(/\s+/g, ' ').split(';').map(item => item.trim()),
     deviceType = systemInfo[0],
-    platform   = 
-      {
-        name   : match.groups.platformName,
-        version: match.groups.platformVersion,
-        details: match.groups.platformDetails
-      },
+
+    platform   = {
+      name   : match.groups.platformName,
+      version: match.groups.platformVersion,
+      details: match.groups.platformDetails
+    },
+
     extensions = 
-      match.groups.extensions.trim().replaceAll(/\s+/g, ' ').split(' ')
-      .map(extension => extension.split('/'))
-      .map(extension => ({name: extension[0], version: extension[1]})),
+    match.groups.extensions.trim().replaceAll(/\s+/g, ' ').split(' ')
+    .map(extension => extension.split('/'))
+    .map(extension => ({name: extension[0], version: extension[1]})),
+
     hasExtension = name => extensions.find(ext => ext.name === name),
-    arg = 
-      {
-        userAgentString,
-        systemInfo,
-        platform,
-        extensions
-      };
+
+    arg = {
+      userAgentString,
+      systemInfo,
+      platform,
+      extensions
+    };
 
     // console.debug(`systemInfo: ${JSON.stringify(systemInfo)}`);
     // console.debug(`platform: ${JSON.stringify(platform)}`);
     // console.debug(`extensions: ${JSON.stringify(extensions)}`);
 
     if (deviceType.match(regex.desktop)) {
-      if (hasExtension('Firefox')) return new FirefoxDesktop(arg);
-      if (hasExtension('OPR')) return new OperaDesktop(arg);
-      if (hasExtension('Edg')) return new EdgeDesktop(arg);
-      if (hasExtension('Chrome')) return new ChromiumDesktop(arg);
-      if (hasExtension('Safari')) return new SafariDesktop(arg);
+      if (hasExtension('Firefox')) {
+        browsers.push(new FirefoxDesktop(arg));
+      } else if (hasExtension('OPR')) {
+        browsers.push(new OperaDesktop(arg));
+      } else if (hasExtension('Edg')) {
+        browsers.push(new EdgeDesktop(arg));
+      } else if (hasExtension('Safari') && hasExtension('Version')) {
+        browsers.push(new SafariDesktop(arg));
+      } else if (hasExtension('Chrome')) {
+        browsers.push(
+          new ChromeDesktop(arg),
+          new BraveDesktop(arg),
+          new VivaldiDesktop(arg),
+          new WaveboxDesktop(arg),
+          new ArcDesktop(arg),
+        );
+      }
+
     } else if(deviceType.match(regex.android) || hasExtension('Kiwi')) {
-      if (hasExtension('Firefox')) return new FirefoxAndroid(arg);
+      if (hasExtension('Firefox')) {
+        browsers.push(new FirefoxAndroid(arg));
+      }
       // Kiwi is Android-only but it has got systemInfo wrong.
       // 1st systemInfo item (deviceType) should be Android not Linux.
       // See: https://user-agents.net/browsers/kiwi (TODO verify these UA strings)
-      if (hasExtension('Kiwi')) return new KiwiAndroid(arg); 
+      if (hasExtension('Kiwi')) {
+        browsers.push(new KiwiAndroid(arg)); 
+      }
+
     } else if(deviceType.match(regex.appleMobile)) {
       if (
         hasExtension('Safari') && !['CriOS', 'FxiOS', 'EdgiOS', 'OPT'].find(ext => hasExtension(ext))
-      ) return new SafariMobile(arg); // Warning: actual browser may be another browser such as Brave (which doesn't support extensions!!!)
+      ) {
+        // Warning: actual browser may be another browser such as Brave (which doesn't support extensions!!!)
+        browsers.push(new SafariMobile(arg));
+      } 
     }
-    return new Browser(arg);
+
   } catch (error) {
     console.error(error);
-    return null;
   }
+  return browsers;
 }
 
 
 export {
   detectBrowser,
   Browser, 
-  ChromiumDesktop, EdgeDesktop, OperaDesktop, FirefoxDesktop, SafariDesktop,
+  ChromeDesktop, EdgeDesktop, OperaDesktop, FirefoxDesktop, SafariDesktop,
+  VivaldiDesktop, WaveboxDesktop, ArcDesktop, BraveDesktop,
   FirefoxAndroid, KiwiAndroid,
   SafariMobile
 };
