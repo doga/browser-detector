@@ -4,7 +4,7 @@ JavaScript library for browser type detection. Runs in all JavaScript runtimes.
 
 ## Usage example
 
-_Tip: Run the examples below by typing this in your terminal (requires Deno):_
+_Tip: Run the example below by typing this in your terminal (requires Deno):_
 
 ```shell
 deno run \
