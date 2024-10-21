@@ -4,13 +4,13 @@ JavaScript library for browser type detection. Runs in all JavaScript runtimes.
 
 ## Usage example
 
-_Tip: Run the example below by typing this in your terminal (requires Deno):_
+_Tip: Run the examples below by typing this in your terminal (requires [Deno](https://deno.com/) 2+):_
 
 ```shell
 deno run \
   --allow-net --allow-run --allow-env --allow-read \
-  https://deno.land/x/mdrb@2.0.0/mod.ts \
-  --dax=false --mode=isolated \
+  jsr:@andrewbrey/mdrb@3.0.4 \
+  --dax=false \
   https://raw.githubusercontent.com/doga/browser-detector/master/README.md
 ```
 
@@ -19,7 +19,7 @@ deno run \
 
 <pre>
 description = '''
-Running this example is safe, it will not read or write anything to your filesystem.
+Running this code is safe.
 '''
 </pre>
 </details>
